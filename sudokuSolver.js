@@ -1,3 +1,10 @@
+const readline = require('readline');
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
 function isPossible(sudoku, i, j, no, n) {
     for (let x = 0; x < n; x++) {
         if (sudoku[x][j] === no || sudoku[i][x] === no) {
@@ -66,19 +73,35 @@ function solveSudoku(sudoku, startingSudoku, i, j) {
 }
 
 const initialSudoku = [
-    [5, 3, 0, 0, 7, 0, 0, 0, 0],
-    [6, 0, 0, 1, 9, 5, 0, 0, 0],
-    [0, 9, 8, 0, 0, 0, 0, 6, 0],
-    [8, 0, 0, 0, 6, 0, 0, 0, 3],
-    [4, 0, 0, 8, 0, 3, 0, 0, 1],
-    [7, 0, 0, 0, 2, 0, 0, 0, 6],
-    [0, 6, 0, 0, 0, 0, 2, 8, 0],
-    [0, 0, 0, 4, 1, 9, 0, 0, 5],
-    [0, 0, 0, 0, 8, 0, 0, 7, 9]
+    [0, 0, 0,  0, 0, 0,  0, 0, 0],
+    [0, 0, 0,  0, 0, 0,  0, 0, 0],
+    [0, 0, 0,  0, 0, 0,  0, 0, 0],
+
+    [0, 0, 0,  0, 0, 0,  0, 0, 0],
+    [0, 0, 0,  0, 0, 0,  0, 0, 0],
+    [0, 0, 0,  0, 0, 0,  0, 0, 0],
+
+    [0, 0, 0,  0, 0, 0,  0, 0, 0],
+    [0, 0, 0,  0, 0, 0,  0, 0, 0],
+    [0, 0, 0,  0, 0, 0,  0, 0, 0]
 ];
 
-console.log("Original Sudoku:");
-printSudoku(initialSudoku, initialSudoku, 9);
-console.log("\nSolution:");
-const solvedSudoku = JSON.parse(JSON.stringify(initialSudoku)); 
-solveSudoku(solvedSudoku, initialSudoku, 0, 0);
+console.log("Please enter the Sudoku puzzle row by row, each row as a space-separated sequence of numbers (use '0' for empty cells):");
+
+let row = 0;
+rl.on('line', (line) => {
+    const numbers = line.split(' ').map(Number);
+    if (numbers.length !== 9) {
+        console.log("Invalid input! Please enter exactly 9 numbers for each row.");
+    } else {
+        initialSudoku[row++] = numbers;
+        if (row === 9) {
+            rl.close();
+            console.log("\nOriginal Sudoku:");
+            printSudoku(initialSudoku, initialSudoku, 9);
+            console.log("\nSolution:");
+            const solvedSudoku = JSON.parse(JSON.stringify(initialSudoku));
+            solveSudoku(solvedSudoku, initialSudoku, 0, 0);
+        }
+    }
+});
